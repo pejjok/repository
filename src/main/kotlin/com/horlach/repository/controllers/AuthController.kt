@@ -1,0 +1,31 @@
+package com.horlach.repository.controllers
+
+import com.horlach.repository.domain.dtos.AuthResponse
+import com.horlach.repository.domain.dtos.LoginRequest
+import com.horlach.repository.domain.dtos.RegisterRequest
+import com.horlach.repository.services.AuthService
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/api/v1/auth")
+class AuthController(
+    private val authService: AuthService
+) {
+    @PostMapping("/register")
+    fun register(
+        @RequestBody registerRequest: RegisterRequest
+    ): ResponseEntity<AuthResponse> {
+        return ResponseEntity.ok(authService.register(registerRequest))
+    }
+
+    @PostMapping("/login")
+    fun login(
+        @RequestBody loginRequest: LoginRequest
+    ): ResponseEntity<AuthResponse> {
+        return ResponseEntity.ok(authService.login(loginRequest))
+    }
+}

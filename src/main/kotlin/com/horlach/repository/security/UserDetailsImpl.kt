@@ -8,15 +8,15 @@ import org.springframework.security.core.userdetails.UserDetails
 class UserDetailsImpl(
     private val user: User
 ): UserDetails {
-    override fun getAuthorities(): Collection<GrantedAuthority?>? {
+    override fun getAuthorities(): Collection<GrantedAuthority> {
         return listOf(SimpleGrantedAuthority(user.role.name))
     }
 
-    override fun getPassword(): String? {
+    override fun getPassword(): String {
         return user.passwordHash
     }
 
-    override fun getUsername(): String? {
+    override fun getUsername(): String {
         return user.email
     }
 
