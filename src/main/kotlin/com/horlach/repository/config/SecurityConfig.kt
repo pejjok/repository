@@ -1,7 +1,9 @@
 package com.horlach.repository.config
 
 import com.horlach.repository.repositories.UserRepository
+import com.horlach.repository.security.JwtAuthFilter
 import com.horlach.repository.security.UserDetailsServiceImpl
+import com.horlach.repository.services.AuthService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -38,5 +40,8 @@ class SecurityConfig {
 
     @Bean
     fun userDetailsService(userRepository: UserRepository): UserDetailsService = UserDetailsServiceImpl(userRepository)
+
+    @Bean
+    fun jwtAuthFilter(authService: AuthService) : JwtAuthFilter = JwtAuthFilter(authService)
 
 }
