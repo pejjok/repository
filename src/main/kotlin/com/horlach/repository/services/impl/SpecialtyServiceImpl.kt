@@ -8,7 +8,9 @@ import com.horlach.repository.domain.dtos.toResponse
 import com.horlach.repository.domain.entity.Specialty
 import com.horlach.repository.repositories.SpecialtyRepository
 import com.horlach.repository.services.SpecialtyService
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import java.util.Optional
 import java.util.UUID
 
 @Service
@@ -41,8 +43,14 @@ class SpecialtyServiceImpl(
         return specialties.map { it.toResponse() }
     }
 
+    @Transactional
     override fun deleteSpecialty(id: UUID) {
-        return specialtyRepository.deleteById(id)
+        val specialty: Specialty = specialtyRepository.findById(id).orElse(null) ?: return;
+
+        if (specialty.groups.isNotEmpty() || specialty.users.isNotEmpty())
+            throw IllegalStateException("Specialty with id $id associated with groups or users")
+
+        specialtyRepository.delete(specialty)
     }
 
     override fun updateSpecialty(

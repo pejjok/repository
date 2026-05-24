@@ -9,7 +9,9 @@ import com.horlach.repository.domain.entity.Specialty
 import com.horlach.repository.repositories.GroupRepository
 import com.horlach.repository.repositories.SpecialtyRepository
 import com.horlach.repository.services.GroupService
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import java.util.Optional
 import java.util.UUID
 
 @Service
@@ -40,7 +42,13 @@ class GroupServiceImpl(
             .map { it.toResponse() }
     }
 
+    @Transactional
     override fun deleteGroup(id: UUID) {
-        groupRepository.deleteById(id)
+        val group: Group = groupRepository.findById(id).orElse(null) ?: return
+
+        if (group.users.isNotEmpty())
+            throw IllegalStateException("Group with id $id associated with users")
+
+        groupRepository.delete(group)
     }
 }
