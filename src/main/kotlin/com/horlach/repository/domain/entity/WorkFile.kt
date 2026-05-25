@@ -21,7 +21,7 @@ class WorkFile(
 
     @OneToOne
     @JoinColumn(name = "work_id", nullable = true)
-    var work: ScientificWork,
+    var work: ScientificWork?,
 
     @Column(nullable = false)
     var fileName: String,
