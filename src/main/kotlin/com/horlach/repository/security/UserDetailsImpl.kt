@@ -9,7 +9,7 @@ class UserDetailsImpl(
     private val user: User
 ): UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority> {
-        return listOf(SimpleGrantedAuthority(user.role.name))
+        return listOf(SimpleGrantedAuthority("ROLE_"+user.role.name))
     }
 
     override fun getPassword(): String {

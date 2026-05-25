@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 class SecurityConfig {
@@ -24,14 +25,15 @@ class SecurityConfig {
     }
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? {
+    fun securityFilterChain(http: HttpSecurity, jwtAuthFilter: JwtAuthFilter): SecurityFilterChain? {
         http
             .authorizeHttpRequests { auth -> auth
                 .anyRequest().permitAll()
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .csrf { crsf -> crsf.disable() }
+            .csrf { csrf -> csrf.disable() }
             .cors { cors -> cors.disable() }
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
 
