@@ -1,6 +1,5 @@
 package com.horlach.repository.domain.entity
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -26,8 +25,8 @@ class Group(
     @JoinColumn(name = "specialty_id", nullable = false)
     var specialty: Specialty,
 
-    @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val users: List<User> = mutableListOf()
+    @OneToMany(mappedBy = "group")
+    var works: List<ScientificWork> = mutableListOf()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

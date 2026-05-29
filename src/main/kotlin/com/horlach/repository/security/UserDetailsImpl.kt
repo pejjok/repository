@@ -4,12 +4,13 @@ import com.horlach.repository.domain.entity.User
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.util.UUID
 
 class UserDetailsImpl(
     private val user: User
 ): UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority> {
-        return listOf(SimpleGrantedAuthority("ROLE_"+user.role.name))
+        return listOf(SimpleGrantedAuthority(user.role.name))
     }
 
     override fun getPassword(): String {
@@ -18,6 +19,10 @@ class UserDetailsImpl(
 
     override fun getUsername(): String {
         return user.email
+    }
+
+    fun getId(): UUID {
+        return user.id!!
     }
 
     override fun isAccountNonExpired(): Boolean {

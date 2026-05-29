@@ -18,34 +18,17 @@ import org.springframework.stereotype.Service
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val groupRepository: GroupRepository,
     private val specialtyRepository: SpecialtyRepository,
     private val passwordEncoder: PasswordEncoder
 ): UserService {
     override fun createUser(request: RegisterRequest): UserResponse {
 
-        val userEntity: User = when (request.role) {
-            UserRole.STUDENT -> {
-                val groupId = request.groupId
-                    ?: throw IllegalArgumentException("GroupId is required for STUDENT role")
-
-                val group = groupRepository.findById(groupId)
-                    .orElseThrow { IllegalArgumentException("Group with id $groupId not found") }
-
-                request.toEntity(passwordEncoder, group = group)
-            }
-
-            UserRole.TEACHER -> {
-                val specialtyId = request.specialtyId
-                    ?: throw IllegalArgumentException("SpecialtyId is required for TEACHER role")
-
-                val specialty = specialtyRepository.findById(specialtyId)
-                    .orElseThrow { IllegalArgumentException("Specialty with id $specialtyId not found") }
-
-                request.toEntity(passwordEncoder, specialty = specialty)
-            }
-
-            else -> throw IllegalArgumentException("Invalid role ${request.role}")
+        val userEntity: User = if (request.role == UserRole.ROLE_SUPERVISOR){
+            val specialties: List<Specialty> = specialtyRepository.findAllById(request.specialtyIds)
+            request.toEntity(passwordEncoder, specialties)
+        }
+        else{
+            request.toEntity(passwordEncoder)
         }
 
         val savedUser = userRepository.save(userEntity)

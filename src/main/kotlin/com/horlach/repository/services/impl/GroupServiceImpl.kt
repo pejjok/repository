@@ -46,8 +46,8 @@ class GroupServiceImpl(
     override fun deleteGroup(id: UUID) {
         val group: Group = groupRepository.findById(id).orElse(null) ?: return
 
-        if (group.users.isNotEmpty())
-            throw IllegalStateException("Group with id $id associated with users")
+        if (group.works.isNotEmpty())
+            throw IllegalStateException("Group with id $id associated with works")
 
         groupRepository.delete(group)
     }

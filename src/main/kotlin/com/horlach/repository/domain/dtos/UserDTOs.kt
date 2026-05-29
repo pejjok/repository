@@ -7,22 +7,16 @@ import java.util.UUID
 data class UserResponse(
     val id: UUID,
     val email: String,
-    val firstName: String,
-    val lastName: String,
-    val middleName: String,
+    val fullName: String,
     val role: UserRole,
-    val groupId: UUID?,
-    val specialtyId: UUID?
+    val specialtyIds: List<UUID>
 )
 
 fun User.toResponse() = UserResponse(
     id = this.id!!,
     email = this.email,
-    firstName = this.firstName,
-    lastName = this.lastName,
-    middleName = this.middleName,
+    fullName = this.fullName,
     role = this.role,
-    groupId = this.group?.id,
-    specialtyId = this.specialty?.id
+    specialtyIds = this.specialties.map { it.id!! }
 )
 

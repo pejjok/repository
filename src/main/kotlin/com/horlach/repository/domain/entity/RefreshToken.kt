@@ -13,36 +13,24 @@ import java.time.Instant
 import java.util.UUID
 
 @Entity
-@Table(name = "work_comments")
-class WorkComment(
+@Table(name = "refresh_tokens")
+class RefreshToken(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: UUID?,
-
-    @ManyToOne
-    @JoinColumn(name = "work_id", nullable = false)
-    var work: ScientificWork,
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     var user: User,
 
     @Column(nullable = false)
-    var comment: String,
+    var token: UUID,
+
+    @Column(nullable = false)
+    var expiresAt: Instant,
 
     @CreationTimestamp
     var createdAt: Instant
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is WorkComment) return false
 
-        if (id != other.id) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return id?.hashCode() ?: 0
-    }
 }

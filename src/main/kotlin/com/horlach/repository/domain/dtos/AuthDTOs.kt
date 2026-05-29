@@ -11,12 +11,9 @@ import java.time.Instant
 data class RegisterRequest(
     val email: String,
     val password: String,
-    val firstName: String,
-    val lastName: String,
-    val middleName: String,
+    val fullName: String,
     val role: UserRole,
-    val groupId: UUID?,
-    val specialtyId: UUID?
+    val specialtyIds: List<UUID>
 )
 
 data class LoginRequest(
@@ -28,16 +25,12 @@ data class AuthResponse(
     val accessToken: String
 )
 
-fun RegisterRequest.toEntity(passwordEncoder: PasswordEncoder, specialty: Specialty? = null, group: Group? = null) = User(
+fun RegisterRequest.toEntity(passwordEncoder: PasswordEncoder, specialties: List<Specialty> = mutableListOf()) = User(
     id = null,
     email = this.email,
     passwordHash = passwordEncoder.encode(this.password)!!,
     role = this.role,
-    firstName = this.firstName,
-    lastName = this.lastName,
-    middleName = this.middleName,
-    group = group,
-    specialty = specialty,
-    createdAt = Instant.now(),
-    updatedAt = Instant.now()
+    fullName = this.fullName,
+    specialties = specialties,
+    createdAt = Instant.now()
 )

@@ -1,6 +1,6 @@
 package com.horlach.repository.domain
 
-enum class ModerationStatus {
+enum class RequestStatus {
     PENDING,
     APPROVED,
     REJECTED

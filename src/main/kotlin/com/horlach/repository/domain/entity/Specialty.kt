@@ -1,11 +1,11 @@
 package com.horlach.repository.domain.entity
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import java.util.UUID
@@ -26,8 +26,8 @@ class Specialty(
     @OneToMany(mappedBy = "specialty")
     val groups: List<Group> = mutableListOf(),
 
-    @OneToMany(mappedBy = "specialty")
-    val users: List<User> = mutableListOf()
+    @ManyToMany(mappedBy = "specialties")
+    val supervisors: List<User> = mutableListOf()
 ){
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

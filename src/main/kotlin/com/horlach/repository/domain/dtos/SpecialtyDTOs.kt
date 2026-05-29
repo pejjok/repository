@@ -9,6 +9,7 @@ data class SpecialtyCreateRequest (
 )
 
 data class SpecialtyUpdateRequest (
+    val code: String,
     val name: String
 )
 
@@ -29,3 +30,9 @@ fun Specialty.toResponse() = SpecialtyResponse(
     code = this.code,
     name = this.name
 )
+
+fun Specialty.updateFromRequest(request: SpecialtyUpdateRequest): Specialty {
+    this.code = request.code
+    this.name = request.name
+    return this
+}

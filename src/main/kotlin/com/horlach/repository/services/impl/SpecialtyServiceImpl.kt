@@ -47,8 +47,8 @@ class SpecialtyServiceImpl(
     override fun deleteSpecialty(id: UUID) {
         val specialty: Specialty = specialtyRepository.findById(id).orElse(null) ?: return;
 
-        if (specialty.groups.isNotEmpty() || specialty.users.isNotEmpty())
-            throw IllegalStateException("Specialty with id $id associated with groups or users")
+        if (specialty.groups.isNotEmpty() || specialty.supervisors.isNotEmpty())
+            throw IllegalStateException("Specialty with id $id associated with groups or supervisor")
 
         specialtyRepository.delete(specialty)
     }
