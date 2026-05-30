@@ -25,6 +25,9 @@ class UserDetailsImpl(
         return user.id!!
     }
 
+    fun getUser(): User{
+        return user
+    }
     override fun isAccountNonExpired(): Boolean {
         return true
     }

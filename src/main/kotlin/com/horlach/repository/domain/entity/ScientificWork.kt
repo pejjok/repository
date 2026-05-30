@@ -55,6 +55,9 @@ class ScientificWork(
     @OneToOne(mappedBy = "work", cascade = [CascadeType.ALL], orphanRemoval = true)
     var file: WorkFile,
 
+    @Column(nullable = false)
+    var isArchived: Boolean,
+
     @CreationTimestamp
     var createdAt: Instant,
 
