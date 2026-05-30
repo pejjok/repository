@@ -3,6 +3,8 @@ package com.horlach.repository.services.impl
 import com.horlach.repository.domain.dtos.WorkFileResponse
 import com.horlach.repository.domain.dtos.toResponse
 import com.horlach.repository.domain.entity.WorkFile
+import com.horlach.repository.error.exceptions.InvalidFileTypeException
+import com.horlach.repository.error.exceptions.ResourceNotFoundException
 import com.horlach.repository.repositories.WorkFileRepository
 import com.horlach.repository.services.StorageService
 import com.horlach.repository.services.WorkFileService
@@ -22,7 +24,7 @@ class WorkFileServiceImpl(
         val extension = StringUtils.getFilenameExtension(file.originalFilename)
 
         if (extension !in listOf("pdf", "docx", "doc")){
-            throw RuntimeException("Invalid file type")
+            throw InvalidFileTypeException("Invalid file type. Only pdf, docx, doc are allowed.")
         }
 
         val filename: String = UUID.randomUUID().toString()
@@ -44,14 +46,13 @@ class WorkFileServiceImpl(
     override fun getWorkFile(id: UUID): WorkFileResponse {
         return workFileRepository.findById(id)
             .map { it.toResponse() }
-            .orElseThrow { RuntimeException("Work file not found") }
+            .orElseThrow { ResourceNotFoundException("Work file with id $id not found") }
     }
 
     override fun getWorkFileAsResource(id: UUID): Resource {
         val workFile: WorkFile = workFileRepository.findById(id)
-            .orElseThrow { RuntimeException("Work file not found") }
+            .orElseThrow { ResourceNotFoundException("Work file with id $id not found") }
         return storageService.loadAsResource(workFile.fileName)
-            ?: throw RuntimeException("File not found")
     }
 
     override fun deleteWorkFile(id: UUID) {

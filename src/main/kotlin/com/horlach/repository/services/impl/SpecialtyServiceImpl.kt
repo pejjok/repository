@@ -6,11 +6,13 @@ import com.horlach.repository.domain.dtos.SpecialtyUpdateRequest
 import com.horlach.repository.domain.dtos.toEntity
 import com.horlach.repository.domain.dtos.toResponse
 import com.horlach.repository.domain.entity.Specialty
+import com.horlach.repository.error.exceptions.DeletionConflictException
+import com.horlach.repository.error.exceptions.ResourceAlreadyExistsException
+import com.horlach.repository.error.exceptions.ResourceNotFoundException
 import com.horlach.repository.repositories.SpecialtyRepository
 import com.horlach.repository.services.SpecialtyService
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
-import java.util.Optional
 import java.util.UUID
 
 @Service
@@ -20,7 +22,7 @@ class SpecialtyServiceImpl(
     override fun createSpecialty(specialtyCreateRequest: SpecialtyCreateRequest): SpecialtyResponse {
 
         if (specialtyRepository.existsByCode(specialtyCreateRequest.code)){
-            throw IllegalArgumentException("Specialty with code ${specialtyCreateRequest.code} already exists")
+            throw ResourceAlreadyExistsException("Specialty with code ${specialtyCreateRequest.code} already exists")
         }
 
         val specialty: Specialty = specialtyCreateRequest.toEntity()
@@ -32,7 +34,7 @@ class SpecialtyServiceImpl(
 
     override fun getSpecialtyById(id: UUID): SpecialtyResponse {
         val specialty: Specialty = specialtyRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Specialty with id $id not found")  }
+            .orElseThrow { ResourceNotFoundException("Specialty with id $id not found") }
 
         return specialty.toResponse()
     }
@@ -48,7 +50,7 @@ class SpecialtyServiceImpl(
         val specialty: Specialty = specialtyRepository.findById(id).orElse(null) ?: return;
 
         if (specialty.groups.isNotEmpty() || specialty.supervisors.isNotEmpty())
-            throw IllegalStateException("Specialty with id $id associated with groups or supervisor")
+            throw DeletionConflictException("Specialty with id $id associated with groups or supervisor")
 
         specialtyRepository.delete(specialty)
     }
@@ -58,7 +60,7 @@ class SpecialtyServiceImpl(
         specialtyUpdateRequest: SpecialtyUpdateRequest
     ): SpecialtyResponse {
         val specialty: Specialty = specialtyRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Specialty with id $id not found")  }
+            .orElseThrow { ResourceNotFoundException("Specialty with id $id not found")  }
 
         specialty.name = specialtyUpdateRequest.name
 

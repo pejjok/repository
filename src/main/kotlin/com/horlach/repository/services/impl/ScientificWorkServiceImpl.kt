@@ -13,13 +13,13 @@ import com.horlach.repository.domain.dtos.updateFromRequest
 import com.horlach.repository.domain.dtos.updateIsArchived
 import com.horlach.repository.domain.entity.ScientificWork
 import com.horlach.repository.domain.entity.User
+import com.horlach.repository.error.exceptions.ResourceNotFoundException
 import com.horlach.repository.repositories.GroupRepository
 import com.horlach.repository.repositories.ScientificWorkRepository
 import com.horlach.repository.repositories.WorkFileRepository
 import com.horlach.repository.services.ScientificWorkService
 import com.horlach.repository.services.WorkFileService
 import org.springframework.security.access.AccessDeniedException
-import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -37,10 +37,10 @@ class ScientificWorkServiceImpl(
         supervisor: User
     ): ScientificWorkResponse {
         val group = groupRepository.findById(request.groupId)
-            .orElseThrow { EntityNotFoundException("Group with id ${request.groupId} not found") }
+            .orElseThrow { ResourceNotFoundException("Group with id ${request.groupId} not found") }
 
         val file = workFileRepository.findById(request.fileId)
-            .orElseThrow { EntityNotFoundException("File with id ${request.fileId} not found") }
+            .orElseThrow { ResourceNotFoundException("File with id ${request.fileId} not found") }
 
         if (supervisor.role == UserRole.ROLE_USER) {
             throw AccessDeniedException("Only supervisors or admins can create works")
@@ -62,13 +62,13 @@ class ScientificWorkServiceImpl(
         supervisor: User
     ): ScientificWorkResponse {
         val work = scientificWorkRepository.findById(id)
-            .orElseThrow { EntityNotFoundException("Work with id $id not found") }
+            .orElseThrow { ResourceNotFoundException("Work with id $id not found") }
 
         val group = groupRepository.findById(request.groupId)
-            .orElseThrow { EntityNotFoundException("Group with id ${request.groupId} not found") }
+            .orElseThrow { ResourceNotFoundException("Group with id ${request.groupId} not found") }
 
         val file = workFileRepository.findById(request.fileId)
-            .orElseThrow { EntityNotFoundException("File with id ${request.fileId} not found") }
+            .orElseThrow { ResourceNotFoundException("File with id ${request.fileId} not found") }
 
         if (supervisor.id != work.supervisor.id) {
             throw AccessDeniedException("Only the supervisor of the work can update it")
@@ -84,7 +84,7 @@ class ScientificWorkServiceImpl(
         user: User
     ): ScientificWorkResponse {
         val work = scientificWorkRepository.findById(id)
-            .orElseThrow { EntityNotFoundException("Work with id $id not found") }
+            .orElseThrow { ResourceNotFoundException("Work with id $id not found") }
 
         if (user.id != work.supervisor.id) {
             throw AccessDeniedException("Only the supervisor of the work can update it")
@@ -100,7 +100,7 @@ class ScientificWorkServiceImpl(
         user: User
     ): ScientificWorkResponse {
         val work = scientificWorkRepository.findById(id)
-            .orElseThrow { EntityNotFoundException("Work with id $id not found") }
+            .orElseThrow { ResourceNotFoundException("Work with id $id not found") }
 
         if (!work.isArchived) {
             return work.toResponse()

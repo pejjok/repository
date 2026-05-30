@@ -1,12 +1,13 @@
 package com.horlach.repository.services.impl
 
+import com.horlach.repository.error.exceptions.StorageException
+import com.horlach.repository.error.exceptions.StorageFileNotFoundException
 import com.horlach.repository.services.StorageService
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.stereotype.Service
-import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.net.MalformedURLException
@@ -14,7 +15,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
-import java.util.*
 
 @Service
 class FileSystemStorageService : StorageService {
@@ -30,7 +30,7 @@ class FileSystemStorageService : StorageService {
         try {
             Files.createDirectories(rootLocation)
         } catch (e: IOException) {
-            throw RuntimeException("Could not initialize storage location", e)
+            throw StorageException("Could not initialize storage location", e)
         }
     }
 
@@ -40,16 +40,15 @@ class FileSystemStorageService : StorageService {
     ): String {
 
         if (file.isEmpty) {
-            throw RuntimeException("Cannot store an empty file")
+            throw StorageException("Cannot store an empty file")
         }
-
 
         val destinationFile = rootLocation
             .resolve(Paths.get(filename))
             .normalize()
             .toAbsolutePath()
         if (destinationFile.parent != rootLocation.toAbsolutePath()) {
-            throw RuntimeException("Cannot store file outside of specified location")
+            throw StorageException("Cannot store file outside of specified location")
         }
 
         try {
@@ -58,23 +57,21 @@ class FileSystemStorageService : StorageService {
             }
             return filename
         } catch (e: IOException) {
-            throw RuntimeException("Failed to store file", e)
+            throw StorageException("Failed to store file", e)
         }
     }
 
-    override fun loadAsResource(filename: String): Resource? {
+    override fun loadAsResource(filename: String): Resource {
         try {
             val file = rootLocation.resolve(filename)
-
             val resource: Resource = UrlResource(file.toUri())
-
             if (resource.exists() || resource.isReadable) {
                 return resource
             } else {
-                return null
+                throw StorageFileNotFoundException("Could not read file: $filename")
             }
         } catch (e: MalformedURLException) {
-            return null
+            throw StorageFileNotFoundException("Could not read file: $filename", e)
         }
     }
 
@@ -83,7 +80,7 @@ class FileSystemStorageService : StorageService {
             val file = rootLocation.resolve(filename)
             Files.deleteIfExists(file)
         } catch (e: IOException) {
-            throw RuntimeException("Could not delete file: $filename", e)
+            throw StorageException("Could not delete file: $filename", e)
         }
     }
 }
