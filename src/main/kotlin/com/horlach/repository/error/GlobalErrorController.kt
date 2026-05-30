@@ -9,6 +9,7 @@ import com.horlach.repository.error.exceptions.StorageFileNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -84,6 +85,16 @@ class GlobalErrorController {
             message = ex.message ?: "Access denied"
         )
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse)
+    }
+
+    @ExceptionHandler(BadCredentialsException::class)
+    fun handleBadCredentialsException(ex: BadCredentialsException): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(
+            status = HttpStatus.UNAUTHORIZED.value(),
+            error = "Unauthorized",
+            message = ex.message ?: "Bad credentials"
+        )
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse)
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
