@@ -20,14 +20,7 @@ class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder
 ): UserService {
     override fun createUser(request: RegisterRequest): UserResponse {
-
-        val userEntity: User = if (request.role == UserRole.ROLE_SUPERVISOR){
-            val specialties: List<Specialty> = specialtyRepository.findAllById(request.specialtyIds)
-            request.toEntity(passwordEncoder, specialties)
-        }
-        else{
-            request.toEntity(passwordEncoder)
-        }
+        val userEntity: User = request.toEntity(passwordEncoder)
 
         val savedUser = userRepository.save(userEntity)
         return savedUser.toResponse()

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -27,5 +28,12 @@ class AuthController(
         @RequestBody loginRequest: LoginRequest
     ): ResponseEntity<AuthResponse> {
         return ResponseEntity.ok(authService.login(loginRequest))
+    }
+
+    @PostMapping("/refresh/{refreshToken}")
+    fun refreshToken(
+        @RequestBody refreshToken: UUID
+    ): ResponseEntity<AuthResponse> {
+        return ResponseEntity.ok(authService.refreshToken(refreshToken))
     }
 }

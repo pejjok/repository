@@ -2,6 +2,7 @@ package com.horlach.repository.domain.dtos
 
 import com.horlach.repository.domain.UserRole
 import com.horlach.repository.domain.entity.Group
+import com.horlach.repository.domain.entity.RefreshToken
 import com.horlach.repository.domain.entity.Specialty
 import com.horlach.repository.domain.entity.User
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -12,8 +13,6 @@ data class RegisterRequest(
     val email: String,
     val password: String,
     val fullName: String,
-    val role: UserRole,
-    val specialtyIds: List<UUID>
 )
 
 data class LoginRequest(
@@ -22,15 +21,16 @@ data class LoginRequest(
 )
 
 data class AuthResponse(
-    val accessToken: String
+    val accessToken: String,
+    val refreshToken: UUID
 )
 
-fun RegisterRequest.toEntity(passwordEncoder: PasswordEncoder, specialties: List<Specialty> = mutableListOf()) = User(
+fun RegisterRequest.toEntity(passwordEncoder: PasswordEncoder) = User(
     id = null,
     email = this.email,
     passwordHash = passwordEncoder.encode(this.password)!!,
-    role = this.role,
+    role = UserRole.ROLE_USER,
     fullName = this.fullName,
-    specialties = specialties,
+    specialties = emptyList(),
     createdAt = Instant.now()
 )
