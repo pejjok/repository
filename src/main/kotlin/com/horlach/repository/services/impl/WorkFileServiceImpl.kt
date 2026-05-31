@@ -1,14 +1,18 @@
 package com.horlach.repository.services.impl
 
+import com.horlach.repository.domain.UserRole
 import com.horlach.repository.domain.dtos.WorkFileResponse
 import com.horlach.repository.domain.dtos.toResponse
+import com.horlach.repository.domain.entity.User
 import com.horlach.repository.domain.entity.WorkFile
 import com.horlach.repository.error.exceptions.InvalidFileTypeException
 import com.horlach.repository.error.exceptions.ResourceNotFoundException
 import com.horlach.repository.repositories.WorkFileRepository
 import com.horlach.repository.services.StorageService
+import com.horlach.repository.services.WorkFileRequestService
 import com.horlach.repository.services.WorkFileService
 import org.springframework.core.io.Resource
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
@@ -18,7 +22,8 @@ import java.util.UUID
 @Service
 class WorkFileServiceImpl(
     private val workFileRepository: WorkFileRepository,
-    private val storageService: StorageService
+    private val storageService: StorageService,
+    private val workFileRequestService: WorkFileRequestService
 ): WorkFileService {
     override fun saveWorkFile(file: MultipartFile): WorkFileResponse {
         val extension = StringUtils.getFilenameExtension(file.originalFilename)
@@ -49,10 +54,15 @@ class WorkFileServiceImpl(
             .orElseThrow { ResourceNotFoundException("Work file with id $id not found") }
     }
 
-    override fun getWorkFileAsResource(id: UUID): Resource {
+    override fun getWorkFileAsResource(id: UUID, user: User): Resource {
         val workFile: WorkFile = workFileRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Work file with id $id not found") }
-        return storageService.loadAsResource(workFile.fileName)
+        if (user.role != UserRole.ROLE_USER || workFileRequestService.isDownloadAllowed(workFile, user)){
+            return storageService.loadAsResource(workFile.fileName)
+        }
+        else{
+            throw AccessDeniedException("Download not allowed for user ${user.id} and file $id")
+        }
     }
 
     override fun deleteWorkFile(id: UUID) {

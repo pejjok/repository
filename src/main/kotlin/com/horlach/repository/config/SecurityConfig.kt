@@ -38,10 +38,14 @@ class SecurityConfig {
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/v1/works/**","/api/v1/work-files/**","/api/v1/specialties/**", "/api/v1/groups/**", "/api/v1/users/**")
                 .hasRole(UserRole.ROLE_USER.withoutPrefix)
+                .requestMatchers(HttpMethod.POST,"/api/v1/work-files/*/request")
+                .hasRole(UserRole.ROLE_USER.withoutPrefix)
+                .requestMatchers("/api/v1/work-files/requests/**")
+                .hasRole(UserRole.ROLE_ADMIN.withoutPrefix)
                 .requestMatchers("/api/v1/works/**","/api/v1/work-files/**")
                 .hasRole(UserRole.ROLE_SUPERVISOR.withoutPrefix)
                 .requestMatchers("/api/v1/specialties/**", "/api/v1/groups/**", "/api/v1/users/**")
-                .hasRole(UserRole.ROLE_SUPERVISOR.withoutPrefix)
+                .hasRole(UserRole.ROLE_ADMIN.withoutPrefix)
                 .anyRequest().authenticated()
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
