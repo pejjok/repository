@@ -1,6 +1,7 @@
 package com.horlach.repository.domain.dtos
 
 import com.horlach.repository.domain.UserRole
+import com.horlach.repository.domain.entity.Specialty
 import com.horlach.repository.domain.entity.User
 import java.util.UUID
 
@@ -12,6 +13,17 @@ data class UserResponse(
     val specialtyIds: List<UUID>
 )
 
+
+data class ChangeRoleRequest(
+    val role: UserRole
+)
+
+data class UserUpdateRequest(
+    val fullName: String,
+    val specialtyIds: List<UUID>
+)
+
+
 fun User.toResponse() = UserResponse(
     id = this.id!!,
     email = this.email,
@@ -20,3 +32,13 @@ fun User.toResponse() = UserResponse(
     specialtyIds = this.specialties.map { it.id!! }
 )
 
+fun User.changeRoleFromRequest(changeRoleRequest: ChangeRoleRequest): User{
+    this.role = changeRoleRequest.role
+    return this
+}
+
+fun User.updateFromRequest(userUpdateRequest: UserUpdateRequest, specialties: List<Specialty>): User{
+    this.fullName = userUpdateRequest.fullName
+    this.specialties = specialties
+    return this
+}

@@ -36,11 +36,11 @@ class SecurityConfig {
         http
             .authorizeHttpRequests { auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/v1/works/**","/api/v1/work-files/**","/api/v1/specialties/**", "/api/v1/groups/**")
+                .requestMatchers(HttpMethod.GET,"/api/v1/works/**","/api/v1/work-files/**","/api/v1/specialties/**", "/api/v1/groups/**", "/api/v1/users/**")
                 .hasRole(UserRole.ROLE_USER.withoutPrefix)
                 .requestMatchers("/api/v1/works/**","/api/v1/work-files/**")
                 .hasRole(UserRole.ROLE_SUPERVISOR.withoutPrefix)
-                .requestMatchers("/api/v1/specialties/**", "/api/v1/groups/**")
+                .requestMatchers("/api/v1/specialties/**", "/api/v1/groups/**", "/api/v1/users/**")
                 .hasRole(UserRole.ROLE_SUPERVISOR.withoutPrefix)
                 .anyRequest().authenticated()
             }
