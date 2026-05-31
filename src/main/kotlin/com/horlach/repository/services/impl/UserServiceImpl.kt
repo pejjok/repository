@@ -86,7 +86,7 @@ class UserServiceImpl(
 
     override fun deleteUser(id: UUID) {
         val user = userRepository.findById(id).orElse(null) ?: return
-        if (userRepository.hasWorks(id)) {
+        if (userRepository.existsByAssignedWorks_Supervisor_Id(id)) {
             throw DeletionConflictException("Cannot delete user with id $id because user have assigned works")
         }
         userRepository.delete(user)

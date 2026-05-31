@@ -34,7 +34,7 @@ class UserController(
         return ResponseEntity.ok(userService.getUserById(id))
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     fun updateUser(
         @PathVariable id: UUID,
         @RequestBody request: UserUpdateRequest
