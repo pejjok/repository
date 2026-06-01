@@ -1,5 +1,6 @@
 package com.horlach.repository.controllers
 
+import com.horlach.repository.domain.WorkType
 import com.horlach.repository.domain.dtos.ScientificWorkCreateRequest
 import com.horlach.repository.domain.dtos.ScientificWorkIsArchivedRequest
 import com.horlach.repository.domain.dtos.ScientificWorkResponse
@@ -45,10 +46,14 @@ class ScientificWorkController(
     @GetMapping()
     fun getAllWorks(
         @PageableDefault(page = 0, size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC) pageable: Pageable,
-        @RequestParam(required = false, defaultValue = "false") showArchived: Boolean,
+        @RequestParam(required = false, defaultValue = "") title: String,
+        @RequestParam(required = false) groupId: UUID?,
+        @RequestParam(required = false) specialtyId: UUID?,
+        @RequestParam(required = false) workType: WorkType?,
+        @RequestParam(required = false, defaultValue = "false") isArchived: Boolean,
         @AuthenticationPrincipal user: UserDetailsImpl
     ): ResponseEntity<PagedModel<ScientificWorkShortResponse>> {
-        val works = scientificWorkService.getAllWorks(pageable,showArchived, user.getUser())
+        val works = scientificWorkService.getAllWorks(pageable, title, groupId, specialtyId, workType, isArchived, user.getUser())
         return ResponseEntity.ok(works)
     }
 

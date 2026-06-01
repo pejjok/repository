@@ -1,6 +1,7 @@
 package com.horlach.repository.services.impl
 
 import com.horlach.repository.domain.UserRole
+import com.horlach.repository.domain.WorkType
 import com.horlach.repository.domain.dtos.ScientificWorkCreateRequest
 import com.horlach.repository.domain.dtos.ScientificWorkIsArchivedRequest
 import com.horlach.repository.domain.dtos.ScientificWorkResponse
@@ -117,20 +118,18 @@ class ScientificWorkServiceImpl(
 
     override fun getAllWorks(
         pageable: Pageable,
-        showArchived: Boolean,
+        title: String,
+        groupId: UUID?,
+        specialtyId: UUID?,
+        workType: WorkType?,
+        isArchived: Boolean,
         user: User
     ): PagedModel<ScientificWorkShortResponse> {
-        if (!showArchived) {
-            return scientificWorkRepository.findAllByIsArchived(pageable, false)
-                .map { it.toShortResponse() }
-                .let { PagedModel(it) }
-        }
-
-        if (user.role == UserRole.ROLE_USER) {
+        if (isArchived && user.role == UserRole.ROLE_USER) {
             throw AccessDeniedException("Only supervisors or admins can get archived works")
         }
 
-        return scientificWorkRepository.findAll(pageable)
+        return scientificWorkRepository.findAllByIsArchived(pageable, title, groupId, specialtyId, workType, isArchived)
             .map { it.toShortResponse() }
             .let { PagedModel(it) }
     }
