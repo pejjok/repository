@@ -27,7 +27,9 @@ class UserServiceImpl(
     }
 
     override fun getAllUsers(): List<UserResponse> {
-        return userRepository.findAllWithSpecialties().map { it.toResponse() }
+        return userRepository.findAllWithSpecialties()
+            .sortedByDescending { it.createdAt }
+            .map { it.toResponse() }
     }
 
     override fun getUserById(id: UUID): UserResponse {

@@ -119,6 +119,7 @@ class ScientificWorkServiceImpl(
     ): List<ScientificWorkShortResponse> {
         if (!showArchived) {
             return scientificWorkRepository.findAllByIsArchived(false)
+                .sortedByDescending { it.createdAt }
                 .map { it.toShortResponse() }
         }
 
@@ -127,6 +128,7 @@ class ScientificWorkServiceImpl(
         }
 
         return scientificWorkRepository.findAll()
+            .sortedByDescending { it.createdAt }
             .map { it.toShortResponse() }
     }
 
