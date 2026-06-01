@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile
 
 
 interface StorageService {
-    fun store(file: MultipartFile, filename: String): String
+    fun store(file: MultipartFile): String
     fun loadAsResource(filename: String): Resource
     fun delete(filename: String)
 }

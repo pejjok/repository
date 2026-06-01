@@ -32,9 +32,8 @@ class WorkFileServiceImpl(
             throw InvalidFileTypeException("Invalid file type. Only pdf, docx, doc are allowed.")
         }
 
-        val filename: String = UUID.randomUUID().toString()
+        val filename: String = storageService.store(file)
         val finalFilename = "$filename.$extension"
-        storageService.store(file, finalFilename)
         val originalFilename: String = file.originalFilename ?: finalFilename
         val workFile = WorkFile(
             id = null,

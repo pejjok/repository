@@ -15,6 +15,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import java.util.UUID
 
 @Service
 class FileSystemStorageService : StorageService {
@@ -35,14 +36,12 @@ class FileSystemStorageService : StorageService {
     }
 
     override fun store(
-        file: MultipartFile,
-        filename: String
+        file: MultipartFile
     ): String {
-
         if (file.isEmpty) {
             throw StorageException("Cannot store an empty file")
         }
-
+        val filename = UUID.randomUUID().toString()
         val destinationFile = rootLocation
             .resolve(Paths.get(filename))
             .normalize()
