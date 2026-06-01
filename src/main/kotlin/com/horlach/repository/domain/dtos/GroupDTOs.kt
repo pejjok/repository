@@ -2,10 +2,14 @@ package com.horlach.repository.domain.dtos
 
 import com.horlach.repository.domain.entity.Group
 import com.horlach.repository.domain.entity.Specialty
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import java.util.UUID
 
 data class GroupCreateRequest(
+    @field:NotBlank(message = "Group name cannot be empty")
     val name: String,
+    @field:NotNull(message = "Specialty ID cannot be null")
     val specialtyId: UUID
 )
 

@@ -5,28 +5,59 @@ import com.horlach.repository.domain.entity.Group
 import com.horlach.repository.domain.entity.ScientificWork
 import com.horlach.repository.domain.entity.User
 import com.horlach.repository.domain.entity.WorkFile
+import jakarta.validation.constraints.*
 import java.time.Instant
 import java.util.UUID
 
 data class ScientificWorkCreateRequest(
+    @field:NotBlank(message = "Title cannot be blank")
+    @field:Size(max = 255, message = "Title is too long")
     val title: String,
+
+    @field:NotBlank(message = "Annotation cannot be blank")
     val annotation: String,
+
+    @field:NotBlank(message = "Student full name cannot be blank")
     val studentFullName: String,
-    val groupId: UUID,
-    val workType: WorkType,
+
+    @field:NotNull(message = "Group ID is required")
+    val groupId: UUID?,
+
+    @field:NotNull(message = "Work type is required")
+    val workType: WorkType?,
+
+    @field:Min(value = 1900, message = "Publication year must be after 1900")
     val publicationYear: Int,
-    val fileId: UUID,
+
+    @field:NotNull(message = "File ID is required")
+    val fileId: UUID?,
 )
 
 data class ScientificWorkUpdateRequest(
+    @field:NotBlank(message = "Title cannot be blank")
+    @field:Size(max = 255, message = "Title is too long")
     val title: String,
+
+    @field:NotBlank(message = "Annotation cannot be blank")
     var annotation: String,
+
+    @field:NotBlank(message = "Student full name cannot be blank")
     var studentFullName: String,
-    var groupId: UUID,
-    var workType: WorkType,
+
+    @field:NotNull(message = "Group ID is required")
+    var groupId: UUID?,
+
+    @field:NotNull(message = "Work type is required")
+    var workType: WorkType?,
+
+    @field:Min(value = 1900, message = "Publication year must be after 1900")
     var publicationYear: Int,
-    var fileId: UUID,
-    val isArchived: Boolean,
+
+    @field:NotNull(message = "File ID is required")
+    var fileId: UUID?,
+
+    @field:NotNull(message = "Is archived is required")
+    val isArchived: Boolean?,
 )
 
 data class ScientificWorkIsArchivedRequest(
@@ -69,7 +100,7 @@ fun ScientificWorkCreateRequest.toEntity(supervisor: User, group: Group, file: W
         studentFullName = studentFullName,
         supervisor = supervisor,
         group = group,
-        workType = workType,
+        workType = workType!!,
         publicationYear = publicationYear,
         file = file,
         isArchived = false,
@@ -77,7 +108,7 @@ fun ScientificWorkCreateRequest.toEntity(supervisor: User, group: Group, file: W
         updatedAt = Instant.now()
     )
 
-    file.work = work //
+    file.work = work
 
     return work
 }
@@ -87,10 +118,10 @@ fun ScientificWork.updateFromRequest(request: ScientificWorkUpdateRequest, group
     this.annotation = request.annotation
     this.studentFullName = request.studentFullName
     this.group = group
-    this.workType = request.workType
+    this.workType = request.workType!!
     this.publicationYear = request.publicationYear
     this.file = file
-    this.isArchived = request.isArchived
+    this.isArchived = request.isArchived!!
     return this
 }
 

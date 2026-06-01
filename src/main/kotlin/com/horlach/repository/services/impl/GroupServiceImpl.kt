@@ -23,8 +23,8 @@ class GroupServiceImpl(
         if (groupRepository.existsByName(createRequest.name)){
             throw IllegalArgumentException("Group with name ${createRequest.name} already exists")
         }
-        val specialty: Specialty = specialtyRepository.findById(createRequest.specialtyId)
-            .orElseThrow{ NoSuchElementException("Specialty with id ${createRequest.specialtyId} not found") }
+        val specialty: Specialty = specialtyRepository.findById(createRequest.specialtyId!!)
+            .orElseThrow{ NoSuchElementException("Specialty with id ${createRequest.specialtyId!!} not found") }
 
         val group: Group = createRequest.toEntity(specialty)
         val savedGroup: Group = groupRepository.save(group)

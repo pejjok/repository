@@ -36,10 +36,10 @@ class ScientificWorkServiceImpl(
         request: ScientificWorkCreateRequest,
         supervisor: User
     ): ScientificWorkResponse {
-        val group = groupRepository.findById(request.groupId)
+        val group = groupRepository.findById(request.groupId!!)
             .orElseThrow { ResourceNotFoundException("Group with id ${request.groupId} not found") }
 
-        val file = workFileRepository.findById(request.fileId)
+        val file = workFileRepository.findById(request.fileId!!)
             .orElseThrow { ResourceNotFoundException("File with id ${request.fileId} not found") }
 
         if (supervisor.role == UserRole.ROLE_USER) {
@@ -64,10 +64,10 @@ class ScientificWorkServiceImpl(
         val work = scientificWorkRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Work with id $id not found") }
 
-        val group = groupRepository.findById(request.groupId)
+        val group = groupRepository.findById(request.groupId!!)
             .orElseThrow { ResourceNotFoundException("Group with id ${request.groupId} not found") }
 
-        val file = workFileRepository.findById(request.fileId)
+        val file = workFileRepository.findById(request.fileId!!)
             .orElseThrow { ResourceNotFoundException("File with id ${request.fileId} not found") }
 
         if (supervisor.id != work.supervisor.id) {

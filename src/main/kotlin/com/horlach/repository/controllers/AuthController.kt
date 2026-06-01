@@ -4,6 +4,7 @@ import com.horlach.repository.domain.dtos.AuthResponse
 import com.horlach.repository.domain.dtos.LoginRequest
 import com.horlach.repository.domain.dtos.RegisterRequest
 import com.horlach.repository.services.AuthService
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,14 +20,14 @@ class AuthController(
 ) {
     @PostMapping("/register")
     fun register(
-        @RequestBody registerRequest: RegisterRequest
+        @Valid @RequestBody registerRequest: RegisterRequest
     ): ResponseEntity<AuthResponse> {
         return ResponseEntity.ok(authService.register(registerRequest))
     }
 
     @PostMapping("/login")
     fun login(
-        @RequestBody loginRequest: LoginRequest
+        @Valid @RequestBody loginRequest: LoginRequest
     ): ResponseEntity<AuthResponse> {
         return ResponseEntity.ok(authService.login(loginRequest))
     }

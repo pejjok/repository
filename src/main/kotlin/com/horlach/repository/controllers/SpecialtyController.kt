@@ -5,6 +5,7 @@ import com.horlach.repository.domain.dtos.SpecialtyResponse
 import com.horlach.repository.domain.dtos.SpecialtyUpdateRequest
 import com.horlach.repository.domain.entity.Specialty
 import com.horlach.repository.services.SpecialtyService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -25,7 +26,7 @@ class SpecialtyController(
 
     @PostMapping
     fun createSpecialty(
-        @RequestBody specialtyCreateRequest: SpecialtyCreateRequest
+        @Valid @RequestBody specialtyCreateRequest: SpecialtyCreateRequest
     ): ResponseEntity<SpecialtyResponse>{
         val specialty: SpecialtyResponse = specialtyService.createSpecialty(specialtyCreateRequest)
         return ResponseEntity.status(HttpStatus.CREATED).body(specialty)
@@ -48,7 +49,7 @@ class SpecialtyController(
 
     @PutMapping("/{id}")
     fun updateSpecialty(
-        @RequestBody specialtyUpdateRequest: SpecialtyUpdateRequest,
+        @Valid @RequestBody specialtyUpdateRequest: SpecialtyUpdateRequest,
         @PathVariable id: UUID
     ): ResponseEntity<SpecialtyResponse> {
         val specialty: SpecialtyResponse = specialtyService.updateSpecialty(id,specialtyUpdateRequest)

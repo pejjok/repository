@@ -5,6 +5,7 @@ import com.horlach.repository.domain.dtos.UserResponse
 import com.horlach.repository.domain.dtos.UserUpdateRequest
 import com.horlach.repository.security.UserDetailsImpl
 import com.horlach.repository.services.UserService
+import jakarta.validation.Valid
 import org.hibernate.sql.Update
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -37,7 +38,7 @@ class UserController(
     @PutMapping("/{id}")
     fun updateUser(
         @PathVariable id: UUID,
-        @RequestBody request: UserUpdateRequest
+        @Valid @RequestBody request: UserUpdateRequest
     ): ResponseEntity<UserResponse>{
         val user = userService.updateUser(id,request)
         return ResponseEntity.ok(user)
@@ -46,7 +47,7 @@ class UserController(
     @PatchMapping("/{id}")
     fun changeRole(
         @PathVariable id: UUID,
-        @RequestBody request: ChangeRoleRequest,
+        @Valid @RequestBody request: ChangeRoleRequest,
         @AuthenticationPrincipal user: UserDetailsImpl
     ): ResponseEntity<UserResponse>{
         val user = userService.changeUserRole(id,request,user.getUser())

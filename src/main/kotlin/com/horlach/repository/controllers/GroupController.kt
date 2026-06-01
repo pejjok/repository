@@ -3,6 +3,7 @@ package com.horlach.repository.controllers
 import com.horlach.repository.domain.dtos.GroupCreateRequest
 import com.horlach.repository.domain.dtos.GroupResponse
 import com.horlach.repository.services.GroupService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -21,7 +22,7 @@ class GroupController(
 ) {
     @PostMapping
     fun createGroup(
-        @RequestBody createRequest: GroupCreateRequest
+        @Valid @RequestBody createRequest: GroupCreateRequest
     ) : ResponseEntity<GroupResponse> {
         val groupResponse: GroupResponse = groupService.createGroup(createRequest)
         return ResponseEntity.status(HttpStatus.CREATED).body(groupResponse)

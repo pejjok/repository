@@ -6,6 +6,7 @@ import com.horlach.repository.domain.dtos.WorkFileResponse
 import com.horlach.repository.security.UserDetailsImpl
 import com.horlach.repository.services.WorkFileRequestService
 import com.horlach.repository.services.WorkFileService
+import jakarta.validation.Valid
 import org.springframework.core.io.Resource
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -68,7 +69,7 @@ class WorkFileController(
     @PutMapping("/request/{id}")
     fun updateRequest(
         @PathVariable id: UUID, // request id
-        @RequestBody request: FileReqUpdateRequest
+        @Valid @RequestBody request: FileReqUpdateRequest
     ): ResponseEntity<FileReqResponse>{
         return ResponseEntity.ok(workFileRequestService.updateRequest(id, request))
     }

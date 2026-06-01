@@ -7,6 +7,7 @@ import com.horlach.repository.domain.dtos.ScientificWorkShortResponse
 import com.horlach.repository.domain.dtos.ScientificWorkUpdateRequest
 import com.horlach.repository.security.UserDetailsImpl
 import com.horlach.repository.services.ScientificWorkService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -30,7 +31,7 @@ class ScientificWorkController(
 
     @PostMapping
     fun createWork(
-        @RequestBody request: ScientificWorkCreateRequest,
+        @Valid @RequestBody request: ScientificWorkCreateRequest,
         @AuthenticationPrincipal user: UserDetailsImpl
     ): ResponseEntity<ScientificWorkResponse> {
         val createdWork = scientificWorkService.createWork(request, user.getUser())
@@ -58,7 +59,7 @@ class ScientificWorkController(
     @PutMapping("/{id}")
     fun updateWork(
         @PathVariable id: UUID,
-        @RequestBody request: ScientificWorkUpdateRequest,
+        @Valid @RequestBody request: ScientificWorkUpdateRequest,
         @AuthenticationPrincipal user: UserDetailsImpl
     ): ResponseEntity<ScientificWorkResponse> {
         val work = scientificWorkService.updateWork(id, request, user.getUser())
@@ -68,7 +69,7 @@ class ScientificWorkController(
     @PatchMapping("/{id}")
     fun updateIsArchivedWork(
         @PathVariable id: UUID,
-        @RequestBody request: ScientificWorkIsArchivedRequest,
+        @Valid @RequestBody request: ScientificWorkIsArchivedRequest,
         @AuthenticationPrincipal user: UserDetailsImpl
     ): ResponseEntity<ScientificWorkResponse> {
         val work = scientificWorkService.archiveWork(id, request, user.getUser())

@@ -4,6 +4,7 @@ import com.horlach.repository.domain.RequestStatus
 import com.horlach.repository.domain.entity.User
 import com.horlach.repository.domain.entity.WorkFile
 import com.horlach.repository.domain.entity.WorkFileRequest
+import jakarta.validation.constraints.NotNull
 import java.util.UUID
 import java.time.Instant
 
@@ -25,7 +26,8 @@ data class FileReqResponse(
 )
 
 data class FileReqUpdateRequest(
-    val status: RequestStatus,
+    @field:NotNull(message = "Status cannot be null")
+    val status: RequestStatus?,
     val durationInSeconds: Long?
 )
 
@@ -47,7 +49,7 @@ fun WorkFileRequest.toResponse() = FileReqResponse(
 )
 
 fun WorkFileRequest.updateFromRequest(request: FileReqUpdateRequest): WorkFileRequest{
-    this.status = request.status
+    this.status = request.status!!
     this.expiresAt = Instant.now().plusSeconds(request.durationInSeconds!!)
     return this
 }
