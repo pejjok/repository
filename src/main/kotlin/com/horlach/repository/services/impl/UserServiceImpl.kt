@@ -9,6 +9,10 @@ import com.horlach.repository.error.exceptions.ResourceNotFoundException
 import com.horlach.repository.repositories.SpecialtyRepository
 import com.horlach.repository.repositories.UserRepository
 import com.horlach.repository.services.UserService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
@@ -26,10 +30,14 @@ class UserServiceImpl(
         return savedUser.toResponse()
     }
 
-    override fun getAllUsers(): List<UserResponse> {
-        return userRepository.findAllWithSpecialties()
-            .sortedByDescending { it.createdAt }
-            .map { it.toResponse() }
+    override fun getAllUsers(pageable: Pageable): PagedModel<UserResponse> {
+        val idPage = userRepository.findIds(pageable)
+
+        if (idPage.isEmpty) return PagedModel(Page.empty(pageable))
+
+        val usersWithSpecialties = userRepository.findAllByIdsWithSpecialties(idPage.content).map { it.toResponse() }
+
+        return PagedModel(PageImpl(usersWithSpecialties, pageable, idPage.totalElements))
     }
 
     override fun getUserById(id: UUID): UserResponse {

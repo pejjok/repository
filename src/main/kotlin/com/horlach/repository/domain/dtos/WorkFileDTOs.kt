@@ -19,7 +19,9 @@ data class WorkFileResponse(
 data class FileReqResponse(
     val id: UUID,
     val workFileId: UUID,
+    val title: String,
     val userId: UUID,
+    val fullName: String,
     val status: RequestStatus,
     val expiresAt: Instant?,
     val createdAt: Instant
@@ -42,7 +44,9 @@ fun WorkFile.toResponse() = WorkFileResponse(
 fun WorkFileRequest.toResponse() = FileReqResponse(
     id = id!!,
     workFileId = workFile.id!!,
+    title = workFile.work!!.title,
     userId = user.id!!,
+    fullName = user.fullName,
     status = status,
     expiresAt = expiresAt,
     createdAt = createdAt

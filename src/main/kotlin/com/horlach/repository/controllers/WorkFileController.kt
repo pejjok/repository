@@ -8,6 +8,9 @@ import com.horlach.repository.services.WorkFileRequestService
 import com.horlach.repository.services.WorkFileService
 import jakarta.validation.Valid
 import org.springframework.core.io.Resource
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
+import org.springframework.data.web.PagedModel
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -66,7 +69,7 @@ class WorkFileController(
         return ResponseEntity.status(HttpStatus.CREATED).body(workFileRequestService.createRequest(id, user.getUser()))
     }
 
-    @PutMapping("/request/{id}")
+    @PutMapping("/requests/{id}")
     fun updateRequest(
         @PathVariable id: UUID, // request id
         @Valid @RequestBody request: FileReqUpdateRequest
@@ -74,4 +77,10 @@ class WorkFileController(
         return ResponseEntity.ok(workFileRequestService.updateRequest(id, request))
     }
 
+    @GetMapping("/requests")
+    fun updateRequest(
+        @PageableDefault(size = 10) pageable: Pageable
+    ): ResponseEntity<PagedModel<FileReqResponse>>{
+        return ResponseEntity.ok(workFileRequestService.getAllRequests(pageable))
+    }
 }

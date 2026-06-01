@@ -6,6 +6,8 @@ import com.horlach.repository.domain.dtos.ScientificWorkResponse
 import com.horlach.repository.domain.dtos.ScientificWorkShortResponse
 import com.horlach.repository.domain.dtos.ScientificWorkUpdateRequest
 import com.horlach.repository.domain.entity.User
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import java.util.UUID
 
 interface ScientificWorkService {
@@ -13,6 +15,6 @@ interface ScientificWorkService {
     fun updateWork(id: UUID, request: ScientificWorkUpdateRequest, supervisor: User): ScientificWorkResponse
     fun archiveWork(id: UUID, request: ScientificWorkIsArchivedRequest, user: User): ScientificWorkResponse
     fun getWorkById(id: UUID, user: User): ScientificWorkResponse
-    fun getAllWorks(showArchived: Boolean, user: User): List<ScientificWorkShortResponse>
+    fun getAllWorks(pageable: Pageable, showArchived: Boolean, user: User): PagedModel<ScientificWorkShortResponse>
     fun deleteWork(id: UUID)
 }

@@ -13,6 +13,10 @@ import com.horlach.repository.error.exceptions.ResourceNotFoundException
 import com.horlach.repository.repositories.WorkFileRepository
 import com.horlach.repository.repositories.WorkFileRequestRepository
 import com.horlach.repository.services.WorkFileRequestService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.UUID
@@ -30,7 +34,8 @@ class WorkFileRequestServiceImpl(
 
         val workFile = workFileRepository.findById(workFileId)
             .orElseThrow { ResourceNotFoundException("Work file with id $workFileId not found") }
-
+        if(workFile.work == null)
+            throw ResourceNotFoundException("Work file with id $workFileId is not associated with any work")
         val workFileRequest = WorkFileRequest(
             id = null,
             workFile = workFile,
@@ -50,6 +55,16 @@ class WorkFileRequestServiceImpl(
         return workFileRequestRepository.findByWorkFileAndUser(workFile, user)
             .sortedByDescending { it.createdAt }
             .map { it.toResponse()  }
+    }
+
+    override fun getAllRequests(pageable: Pageable): PagedModel<FileReqResponse> {
+        val idPage = workFileRequestRepository.findIds(pageable)
+
+        if (idPage.isEmpty) return PagedModel(Page.empty(pageable))
+
+        val usersWithSpecialties = workFileRequestRepository.findAllByIdsWithSpecialties(idPage.content).map { it.toResponse() }
+
+        return PagedModel(PageImpl(usersWithSpecialties, pageable, idPage.totalElements))
     }
 
     override fun updateRequest(

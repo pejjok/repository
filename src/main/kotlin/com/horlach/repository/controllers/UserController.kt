@@ -7,6 +7,9 @@ import com.horlach.repository.security.UserDetailsImpl
 import com.horlach.repository.services.UserService
 import jakarta.validation.Valid
 import org.hibernate.sql.Update
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
+import org.springframework.data.web.PagedModel
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
@@ -24,8 +27,10 @@ class UserController(
     private val userService: UserService
 ) {
     @GetMapping
-    fun findUsers(): ResponseEntity<List<UserResponse>> {
-        return ResponseEntity.ok(userService.getAllUsers())
+    fun findUsers(
+        @PageableDefault(page = 0, size = 20) pageable: Pageable
+    ): ResponseEntity<PagedModel<UserResponse>> {
+        return ResponseEntity.ok(userService.getAllUsers(pageable))
     }
 
     @GetMapping("/{id}")

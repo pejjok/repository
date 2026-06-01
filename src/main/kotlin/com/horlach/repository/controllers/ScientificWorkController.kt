@@ -8,6 +8,10 @@ import com.horlach.repository.domain.dtos.ScientificWorkUpdateRequest
 import com.horlach.repository.security.UserDetailsImpl
 import com.horlach.repository.services.ScientificWorkService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
+import org.springframework.data.web.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -40,10 +44,11 @@ class ScientificWorkController(
 
     @GetMapping()
     fun getAllWorks(
+        @PageableDefault(page = 0, size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC) pageable: Pageable,
         @RequestParam(required = false, defaultValue = "false") showArchived: Boolean,
         @AuthenticationPrincipal user: UserDetailsImpl
-    ): ResponseEntity<List<ScientificWorkShortResponse>> {
-        val works = scientificWorkService.getAllWorks(showArchived, user.getUser())
+    ): ResponseEntity<PagedModel<ScientificWorkShortResponse>> {
+        val works = scientificWorkService.getAllWorks(pageable,showArchived, user.getUser())
         return ResponseEntity.ok(works)
     }
 

@@ -21,6 +21,8 @@ import com.horlach.repository.services.ScientificWorkService
 import com.horlach.repository.services.WorkFileService
 import org.springframework.security.access.AccessDeniedException
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -114,22 +116,23 @@ class ScientificWorkServiceImpl(
     }
 
     override fun getAllWorks(
+        pageable: Pageable,
         showArchived: Boolean,
         user: User
-    ): List<ScientificWorkShortResponse> {
+    ): PagedModel<ScientificWorkShortResponse> {
         if (!showArchived) {
-            return scientificWorkRepository.findAllByIsArchived(false)
-                .sortedByDescending { it.createdAt }
+            return scientificWorkRepository.findAllByIsArchived(pageable, false)
                 .map { it.toShortResponse() }
+                .let { PagedModel(it) }
         }
 
         if (user.role == UserRole.ROLE_USER) {
             throw AccessDeniedException("Only supervisors or admins can get archived works")
         }
 
-        return scientificWorkRepository.findAll()
-            .sortedByDescending { it.createdAt }
+        return scientificWorkRepository.findAll(pageable)
             .map { it.toShortResponse() }
+            .let { PagedModel(it) }
     }
 
     @Transactional
