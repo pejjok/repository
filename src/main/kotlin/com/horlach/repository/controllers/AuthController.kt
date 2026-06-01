@@ -5,6 +5,7 @@ import com.horlach.repository.domain.dtos.LoginRequest
 import com.horlach.repository.domain.dtos.RegisterRequest
 import com.horlach.repository.services.AuthService
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -32,7 +33,7 @@ class AuthController(
 
     @PostMapping("/refresh/{refreshToken}")
     fun refreshToken(
-        @RequestBody refreshToken: UUID
+        @PathVariable refreshToken: UUID
     ): ResponseEntity<AuthResponse> {
         return ResponseEntity.ok(authService.refreshToken(refreshToken))
     }
