@@ -3,7 +3,7 @@ package com.horlach.repository.services
 import com.horlach.repository.domain.dtos.ChangeRoleRequest
 import com.horlach.repository.domain.dtos.RegisterRequest
 import com.horlach.repository.domain.dtos.UserResponse
-import com.horlach.repository.domain.dtos.UserUpdateRequest
+import com.horlach.repository.domain.dtos.UserChangeSpecialtiesRequest
 import com.horlach.repository.domain.entity.User
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -14,6 +14,7 @@ interface UserService {
     fun getAllUsers(pageable: Pageable): PagedModel<UserResponse>
     fun getUserById(id: UUID): UserResponse
     fun changeUserRole(id: UUID, request: ChangeRoleRequest, admin: User): UserResponse
-    fun updateUser(id: UUID, request: UserUpdateRequest): UserResponse
+    fun changeSpecialties(id: UUID, request: UserChangeSpecialtiesRequest): UserResponse
+    fun changeName(user: User, fullName: String): UserResponse
     fun deleteUser(id: UUID)
 }

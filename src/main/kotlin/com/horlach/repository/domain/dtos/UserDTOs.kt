@@ -3,8 +3,6 @@ package com.horlach.repository.domain.dtos
 import com.horlach.repository.domain.UserRole
 import com.horlach.repository.domain.entity.Specialty
 import com.horlach.repository.domain.entity.User
-import jakarta.validation.constraints.Email
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.util.UUID
 
@@ -22,13 +20,7 @@ data class ChangeRoleRequest(
     val role: UserRole?
 )
 
-data class UserUpdateRequest(
-    @field:NotBlank(message = "Full name cannot be empty")
-    val fullName: String?,
-
-    @field:Email(message = "Invalid email format")
-    val email: String?,
-
+data class UserChangeSpecialtiesRequest(
     val specialtyIds: List<UUID>
 )
 
@@ -46,8 +38,7 @@ fun User.changeRoleFromRequest(changeRoleRequest: ChangeRoleRequest): User{
     return this
 }
 
-fun User.updateFromRequest(userUpdateRequest: UserUpdateRequest, specialties: List<Specialty>): User{
-    this.fullName = userUpdateRequest.fullName!!
+fun User.updateSpecialties(specialties: List<Specialty>): User{
     this.specialties = specialties
     return this
 }

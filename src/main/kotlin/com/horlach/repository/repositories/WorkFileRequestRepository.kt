@@ -17,6 +17,6 @@ interface WorkFileRequestRepository: JpaRepository<WorkFileRequest, UUID> {
     fun findIds(pageable: Pageable): Page<UUID>
 
     @EntityGraph(attributePaths = ["workFile","user"])
-    @Query("SELECT u FROM User u WHERE u.id IN :ids")
+    @Query("SELECT u FROM WorkFileRequest u WHERE u.id IN :ids")
     fun findAllByIdsWithSpecialties(ids: List<UUID>): List<WorkFileRequest>
 }

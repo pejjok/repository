@@ -61,6 +61,14 @@ class WorkFileController(
         return ResponseEntity.noContent().build()
     }
 
+    @GetMapping("/{id}/request")
+    fun getRequest(
+        @PathVariable id: UUID,
+        @AuthenticationPrincipal user: UserDetailsImpl
+    ): ResponseEntity<List<FileReqResponse>>{
+        return ResponseEntity.status(HttpStatus.CREATED).body(workFileRequestService.getRequests(id, user.getUser()))
+    }
+
     @PostMapping("/{id}/request")
     fun createRequest(
         @PathVariable id: UUID, // work file id

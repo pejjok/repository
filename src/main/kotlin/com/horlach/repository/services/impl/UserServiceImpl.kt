@@ -72,9 +72,9 @@ class UserServiceImpl(
         return savedUser.toResponse()
     }
 
-    override fun updateUser(
+    override fun changeSpecialties(
         id: UUID,
-        request: UserUpdateRequest
+        request: UserChangeSpecialtiesRequest
     ): UserResponse {
         val user: User = userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User with id $id not found") }
@@ -82,7 +82,17 @@ class UserServiceImpl(
         if (user.role != UserRole.ROLE_SUPERVISOR)
             throw IllegalArgumentException("User with id $id is not a supervisor")
 
-        user.updateFromRequest(request, specialties)
+        user.updateSpecialties(specialties)
+        val savedUser = userRepository.save(user)
+        return savedUser.toResponse()
+    }
+
+
+    override fun changeName(
+        user: User,
+        fullName: String
+    ): UserResponse {
+        user.fullName = fullName
         val savedUser = userRepository.save(user)
         return savedUser.toResponse()
     }

@@ -2,11 +2,12 @@ package com.horlach.repository.controllers
 
 import com.horlach.repository.domain.dtos.ChangeRoleRequest
 import com.horlach.repository.domain.dtos.UserResponse
-import com.horlach.repository.domain.dtos.UserUpdateRequest
+import com.horlach.repository.domain.dtos.UserChangeSpecialtiesRequest
 import com.horlach.repository.security.UserDetailsImpl
 import com.horlach.repository.services.UserService
 import jakarta.validation.Valid
-import org.hibernate.sql.Update
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.data.web.PagedModel
@@ -40,12 +41,24 @@ class UserController(
         return ResponseEntity.ok(userService.getUserById(id))
     }
 
+    @PatchMapping
+    fun updateUser(
+        @NotBlank(message = "Full name cannot be empty")
+        @Size(min = 10, max = 100, message = "Full name must be between {min} and {max} characters long")
+        @RequestBody
+        fullname: String,
+        @AuthenticationPrincipal user: UserDetailsImpl
+    ): ResponseEntity<UserResponse>{
+        val user = userService.changeName(user.getUser(),fullname)
+        return ResponseEntity.ok(user)
+    }
+
     @PutMapping("/{id}")
     fun updateUser(
         @PathVariable id: UUID,
-        @Valid @RequestBody request: UserUpdateRequest
+        @Valid @RequestBody request: UserChangeSpecialtiesRequest
     ): ResponseEntity<UserResponse>{
-        val user = userService.updateUser(id,request)
+        val user = userService.changeSpecialties(id,request)
         return ResponseEntity.ok(user)
     }
 

@@ -5,6 +5,7 @@ import com.horlach.repository.domain.dtos.SpecialtyResponse
 import com.horlach.repository.domain.dtos.SpecialtyUpdateRequest
 import com.horlach.repository.domain.dtos.toEntity
 import com.horlach.repository.domain.dtos.toResponse
+import com.horlach.repository.domain.dtos.updateFromRequest
 import com.horlach.repository.domain.entity.Specialty
 import com.horlach.repository.error.exceptions.DeletionConflictException
 import com.horlach.repository.error.exceptions.ResourceAlreadyExistsException
@@ -62,9 +63,8 @@ class SpecialtyServiceImpl(
         val specialty: Specialty = specialtyRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Specialty with id $id not found")  }
 
-        specialty.name = specialtyUpdateRequest.name
 
-        val updatedSpecialty: Specialty = specialtyRepository.save(specialty)
+        val updatedSpecialty: Specialty = specialtyRepository.save(specialty.updateFromRequest(specialtyUpdateRequest))
 
         return updatedSpecialty.toResponse()
     }
