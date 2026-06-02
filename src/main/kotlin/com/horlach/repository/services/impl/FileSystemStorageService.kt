@@ -5,6 +5,7 @@ import com.horlach.repository.error.exceptions.StorageFileNotFoundException
 import com.horlach.repository.services.StorageService
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Profile
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.stereotype.Service
@@ -18,6 +19,7 @@ import java.nio.file.StandardCopyOption
 import java.util.UUID
 
 @Service
+@Profile("!prod")
 class FileSystemStorageService : StorageService {
 
     @Value("\${app.storage.location:uploads}")
