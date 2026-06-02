@@ -15,6 +15,7 @@ interface ScientificWorkRepository: JpaRepository<ScientificWork, UUID> {
         LEFT JOIN w.group g 
         LEFT JOIN g.specialty s
         WHERE (:title = '' OR LOWER(w.title) LIKE LOWER(CONCAT('%', :title, '%')))
+          AND (:year IS NULL OR w.publicationYear = :year)
           AND (:groupId IS NULL OR g.id = :groupId)
           AND (:specialtyId IS NULL OR s.id = :specialtyId)
           AND (w.workType = :workType OR CAST(:workType AS string) IS NULL)
@@ -24,6 +25,7 @@ interface ScientificWorkRepository: JpaRepository<ScientificWork, UUID> {
         LEFT JOIN w.group g 
         LEFT JOIN g.specialty s
         WHERE (:title = '' OR LOWER(w.title) LIKE LOWER(CONCAT('%', :title, '%')))
+          AND (:year IS NULL OR w.publicationYear = :year)
           AND (:groupId IS NULL OR g.id = :groupId)
           AND (:specialtyId IS NULL OR s.id = :specialtyId)
           AND (w.workType = :workType OR CAST(:workType AS string) IS NULL)
@@ -35,6 +37,7 @@ interface ScientificWorkRepository: JpaRepository<ScientificWork, UUID> {
         groupId: UUID?,
         specialtyId: UUID?,
         workType: WorkType?,
+        year: Int?,
         isArchived: Boolean
     ): Page<ScientificWork>
 }

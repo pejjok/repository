@@ -50,10 +50,11 @@ class ScientificWorkController(
         @RequestParam(required = false) groupId: UUID?,
         @RequestParam(required = false) specialtyId: UUID?,
         @RequestParam(required = false) workType: WorkType?,
+        @RequestParam(required = false) year: Int?,
         @RequestParam(required = false, defaultValue = "false") isArchived: Boolean,
         @AuthenticationPrincipal user: UserDetailsImpl
     ): ResponseEntity<PagedModel<ScientificWorkShortResponse>> {
-        val works = scientificWorkService.getAllWorks(pageable, title, groupId, specialtyId, workType, isArchived, user.getUser())
+        val works = scientificWorkService.getAllWorks(pageable, title, groupId, specialtyId, workType, year,isArchived, user.getUser())
         return ResponseEntity.ok(works)
     }
 

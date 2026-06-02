@@ -16,6 +16,6 @@ interface ScientificWorkService {
     fun updateWork(id: UUID, request: ScientificWorkUpdateRequest, supervisor: User): ScientificWorkResponse
     fun archiveWork(id: UUID, request: ScientificWorkIsArchivedRequest, user: User): ScientificWorkResponse
     fun getWorkById(id: UUID, user: User): ScientificWorkResponse
-    fun getAllWorks(pageable: Pageable, title: String, groupId: UUID?, specialtyId: UUID?, workType: WorkType?, isArchived: Boolean, user: User): PagedModel<ScientificWorkShortResponse>
+    fun getAllWorks(pageable: Pageable, title: String, groupId: UUID?, specialtyId: UUID?, workType: WorkType?, year: Int?, isArchived: Boolean, user: User): PagedModel<ScientificWorkShortResponse>
     fun deleteWork(id: UUID)
 }

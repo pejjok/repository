@@ -122,6 +122,7 @@ class ScientificWorkServiceImpl(
         groupId: UUID?,
         specialtyId: UUID?,
         workType: WorkType?,
+        year: Int?,
         isArchived: Boolean,
         user: User
     ): PagedModel<ScientificWorkShortResponse> {
@@ -129,7 +130,7 @@ class ScientificWorkServiceImpl(
             throw AccessDeniedException("Only supervisors or admins can get archived works")
         }
 
-        return scientificWorkRepository.findAllByIsArchived(pageable, title, groupId, specialtyId, workType, isArchived)
+        return scientificWorkRepository.findAllByIsArchived(pageable, title, groupId, specialtyId, workType,year, isArchived)
             .map { it.toShortResponse() }
             .let { PagedModel(it) }
     }
