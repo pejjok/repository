@@ -12,6 +12,7 @@ import com.horlach.repository.services.StorageService
 import com.horlach.repository.services.WorkFileRequestService
 import com.horlach.repository.services.WorkFileService
 import org.springframework.core.io.Resource
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
@@ -68,5 +69,14 @@ class WorkFileServiceImpl(
         val workFile: WorkFile = workFileRepository.findById(id).orElse(null) ?: return
         storageService.delete(workFile.fileName)
         workFileRepository.delete(workFile)
+    }
+
+    @Scheduled(cron = "0 0 0 */7 * *")
+    fun deleteExpiredFiles() {
+        val expiredFiles = workFileRepository.findByWorkNullAndUploadedAtLessThan(Instant.now().minus(7, java.time.temporal.ChronoUnit.DAYS))
+        expiredFiles.forEach {
+            storageService.delete(it.fileName)
+            workFileRepository.delete(it)
+        }
     }
 }
