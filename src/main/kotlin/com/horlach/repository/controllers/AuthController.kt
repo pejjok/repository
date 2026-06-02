@@ -1,6 +1,7 @@
 package com.horlach.repository.controllers
 
 import com.horlach.repository.domain.dtos.AuthResponse
+import com.horlach.repository.domain.dtos.ChangePasswordRequest
 import com.horlach.repository.domain.dtos.LoginRequest
 import com.horlach.repository.domain.dtos.RegisterRequest
 import com.horlach.repository.services.AuthService
@@ -38,4 +39,23 @@ class AuthController(
     ): ResponseEntity<AuthResponse> {
         return ResponseEntity.ok(authService.refreshToken(refreshToken))
     }
+
+    @PostMapping("/change-password")
+    fun changePasswordRequest(
+        @RequestBody email: String
+    ): ResponseEntity<Unit> {
+        authService.changePasswordRequest(email)
+        return ResponseEntity.ok().build()
+    }
+
+
+    @PostMapping("/change-password/verify")
+    fun changePassword(
+        @Valid @RequestBody request: ChangePasswordRequest
+    ): ResponseEntity<AuthResponse> {
+        return ResponseEntity.ok(
+            authService.validatePasswordToken(request)
+        )
+    }
+
 }

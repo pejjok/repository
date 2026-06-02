@@ -29,6 +29,7 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-api:0.13.0")
 	implementation("com.google.apis:google-api-services-drive:v3-rev197-1.25.0")
 	implementation("com.google.auth:google-auth-library-credentials:1.47.0")
+	implementation("org.springframework.boot:spring-boot-starter-mail")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -39,6 +40,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-mail-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

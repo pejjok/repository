@@ -20,7 +20,7 @@ class JwtAuthFilter(
         try {
             val token: String? = extractToken(request)
             if (token != null) {
-                val userDetails: UserDetails = authService.validateToken(token)
+                val userDetails: UserDetails = authService.validateAccessToken(token)
                 val authentication = UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,

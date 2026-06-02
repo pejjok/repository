@@ -16,5 +16,6 @@ interface UserService {
     fun changeUserRole(id: UUID, request: ChangeRoleRequest, admin: User): UserResponse
     fun changeSpecialties(id: UUID, request: UserChangeSpecialtiesRequest): UserResponse
     fun changeName(user: User, fullName: String): UserResponse
+    fun changePassword(id: UUID, newPassword: String): UserResponse
     fun deleteUser(id: UUID)
 }

@@ -31,6 +31,14 @@ data class LoginRequest(
     val password: String
 )
 
+data class ChangePasswordRequest(
+    @field:NotBlank(message = "Token is required")
+    val token: String,
+    @field:NotBlank(message = "New password is required")
+    @field:Size(min = 8, message = "Password must be at least {min} characters long")
+    val newPassword: String
+)
+
 data class AuthResponse(
     val accessToken: String,
     val refreshToken: UUID

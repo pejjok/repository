@@ -97,6 +97,19 @@ class UserServiceImpl(
         return savedUser.toResponse()
     }
 
+    override fun changePassword(
+        id: UUID,
+        newPassword: String
+    ): UserResponse {
+        val user = userRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("User with id $id not found") }
+
+        user.passwordHash = passwordEncoder.encode(newPassword)!!
+        val savedUser = userRepository.save(user)
+        return savedUser.toResponse()
+
+    }
+
     override fun deleteUser(id: UUID) {
         val user = userRepository.findById(id).orElse(null) ?: return
         if (userRepository.existsByAssignedWorks_Supervisor_Id(id)) {
