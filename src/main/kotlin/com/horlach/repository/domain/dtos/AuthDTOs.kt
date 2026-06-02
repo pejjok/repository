@@ -50,6 +50,6 @@ fun RegisterRequest.toEntity(passwordEncoder: PasswordEncoder) = User(
     passwordHash = passwordEncoder.encode(this.password)!!,
     role = UserRole.ROLE_USER,
     fullName = this.fullName,
-    specialties = emptyList(),
+    specialties = mutableListOf(),
     createdAt = Instant.now()
 )

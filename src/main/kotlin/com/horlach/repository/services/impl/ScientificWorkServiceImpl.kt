@@ -77,6 +77,9 @@ class ScientificWorkServiceImpl(
             throw AccessDeniedException("Only the supervisor of the work can update it")
         }
 
+        if (request.fileId != work.file.id)
+            workFileService.deleteWorkFile(work.file.id!!)
+
         val savedWork = scientificWorkRepository.save(work.updateFromRequest(request, group, file))
         return savedWork.toResponse()
     }

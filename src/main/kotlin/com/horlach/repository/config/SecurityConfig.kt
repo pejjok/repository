@@ -94,7 +94,7 @@ class SecurityConfig {
                 passwordHash = passwordEncoder.encode(adminPassword)!!,
                 fullName = "System Administrator",
                 role = UserRole.ROLE_ADMIN,
-                specialties = emptyList(),
+                specialties = mutableListOf(),
                 createdAt = Instant.now()
             )
             userRepository.save(admin)
@@ -106,7 +106,7 @@ class SecurityConfig {
     fun corsConfigurationSource(origin: String): CorsConfigurationSource {
         val configuration = CorsConfiguration()
         configuration.setAllowedOriginPatterns(listOf("*"))
-        configuration.setAllowedMethods(listOf("GET", "POST", "PUT", "DELETE", "OPTIONS"))
+        configuration.setAllowedMethods(listOf("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"))
         configuration.setAllowedHeaders(listOf("*"))
         configuration.setAllowCredentials(true)
         val source = UrlBasedCorsConfigurationSource()

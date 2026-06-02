@@ -122,6 +122,7 @@ fun ScientificWork.updateFromRequest(request: ScientificWorkUpdateRequest, group
     this.publicationYear = request.publicationYear
     this.file = file
     this.isArchived = request.isArchived!!
+    file.work = this
     return this
 }
 

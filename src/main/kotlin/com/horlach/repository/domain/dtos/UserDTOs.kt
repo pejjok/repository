@@ -38,7 +38,7 @@ fun User.changeRoleFromRequest(changeRoleRequest: ChangeRoleRequest): User{
     return this
 }
 
-fun User.updateSpecialties(specialties: List<Specialty>): User{
+fun User.updateSpecialties(specialties: MutableList<Specialty>): User{
     this.specialties = specialties
     return this
 }

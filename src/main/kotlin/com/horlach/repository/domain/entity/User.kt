@@ -48,10 +48,10 @@ class User(
         joinColumns = [JoinColumn(name = "supervisor_id")],
         inverseJoinColumns = [JoinColumn(name = "specialty_id")]
         )
-    var specialties: List<Specialty>,
+    var specialties: MutableList<Specialty> = mutableListOf(),
 
     @OneToMany(mappedBy = "supervisor")
-    val assignedWorks: List<ScientificWork> = mutableListOf(),
+    val assignedWorks: MutableList<ScientificWork> = mutableListOf(),
 
     @CreationTimestamp
     var createdAt: Instant = Instant.now()

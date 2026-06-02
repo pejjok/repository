@@ -64,7 +64,7 @@ class UserServiceImpl(
 
         // if role changes from supervisor to admin or user , delete specialties because they dont need them
         if (request.role in listOf(UserRole.ROLE_ADMIN, UserRole.ROLE_USER)){
-            user.specialties = emptyList()
+            user.specialties = mutableListOf()
         }
         user.changeRoleFromRequest(request)
 
@@ -78,7 +78,7 @@ class UserServiceImpl(
     ): UserResponse {
         val user: User = userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User with id $id not found") }
-        val specialties: List<Specialty> = specialtyRepository.findAllById(request.specialtyIds)
+        val specialties: MutableList<Specialty> = specialtyRepository.findAllById(request.specialtyIds)
         if (user.role != UserRole.ROLE_SUPERVISOR)
             throw IllegalArgumentException("User with id $id is not a supervisor")
 
