@@ -1,19 +1,23 @@
 package com.horlach.repository.services.impl
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.newTrustedTransport
 import com.google.api.client.http.InputStreamContent
+import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
-import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
+import com.google.auth.http.HttpCredentialsAdapter
+import com.google.auth.oauth2.ServiceAccountCredentials
 import com.horlach.repository.services.StorageService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.InputStreamResource
 import org.springframework.core.io.Resource
+import org.springframework.core.io.WritableResource
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayOutputStream
 import java.util.Base64
 
 @Service
@@ -27,10 +31,13 @@ class GoogleDriveStorageService(
 ): StorageService {
 
     var credentialsJson = String(Base64.getDecoder().decode(credentialsBase64))
-    var credentials: GoogleCredential = GoogleCredential.fromStream(credentialsJson.byteInputStream())
-        .createScoped(listOf(DriveScopes.DRIVE))
+    var credentials = ServiceAccountCredentials.fromStream(credentialsJson.byteInputStream())
+        .createDelegated("repozitariy@spfc.kr.ua")
+        .createScoped(listOf(DriveScopes.DRIVE_FILE))
 
-    var drive: Drive = Drive.Builder(newTrustedTransport(), JacksonFactory(), credentials)
+
+    var drive: Drive = Drive.Builder(newTrustedTransport(), GsonFactory(), HttpCredentialsAdapter(credentials))
+        .setApplicationName("Repository app")
         .build()
 
     override fun store(file: MultipartFile): String {
@@ -50,13 +57,14 @@ class GoogleDriveStorageService(
         return uploadedFile.id
     }
 
-    override fun loadAsResource(filename: String): Resource {
-        return drive.files().get(filename).executeMediaAsInputStream().use { input ->
-            InputStreamResource(input)
-        }
+    override fun loadAsResource(filename: String): Resource { // its not actually a filename, its a file id in google drive
+        val outputStream = ByteArrayOutputStream()
+        drive.files().get(filename).executeMediaAndDownloadTo(outputStream)
+        val byteArray = outputStream.toByteArray()
+        return ByteArrayResource(byteArray)
     }
 
     override fun delete(filename: String) {
-        return
+        drive.files().delete(filename).execute()
     }
 }

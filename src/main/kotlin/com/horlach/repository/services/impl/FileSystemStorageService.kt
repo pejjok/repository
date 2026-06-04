@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.net.MalformedURLException
@@ -43,7 +44,7 @@ class FileSystemStorageService : StorageService {
         if (file.isEmpty) {
             throw StorageException("Cannot store an empty file")
         }
-        val filename = UUID.randomUUID().toString()
+        val filename = UUID.randomUUID().toString() + "." + StringUtils.getFilenameExtension(file.originalFilename)
         val destinationFile = rootLocation
             .resolve(Paths.get(filename))
             .normalize()

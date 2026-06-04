@@ -34,12 +34,11 @@ class WorkFileServiceImpl(
         }
 
         val filename: String = storageService.store(file)
-        val finalFilename = "$filename.$extension"
-        val originalFilename: String = file.originalFilename ?: finalFilename
+        val originalFilename: String = file.originalFilename ?: filename
         val workFile = WorkFile(
             id = null,
             work = null,
-            fileName = finalFilename,
+            fileName = filename,
             originalName = originalFilename,
             fileSize = file.size,
             uploadedAt = Instant.now()

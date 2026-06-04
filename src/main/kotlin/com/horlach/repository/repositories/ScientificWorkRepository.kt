@@ -19,6 +19,7 @@ interface ScientificWorkRepository: JpaRepository<ScientificWork, UUID> {
           AND (:groupId IS NULL OR g.id = :groupId)
           AND (:specialtyId IS NULL OR s.id = :specialtyId)
           AND (w.workType = :workType OR CAST(:workType AS string) IS NULL)
+          AND (:isArchived = w.isArchived)
     """,
         countQuery = """
         SELECT COUNT(w) FROM ScientificWork w 
@@ -29,6 +30,7 @@ interface ScientificWorkRepository: JpaRepository<ScientificWork, UUID> {
           AND (:groupId IS NULL OR g.id = :groupId)
           AND (:specialtyId IS NULL OR s.id = :specialtyId)
           AND (w.workType = :workType OR CAST(:workType AS string) IS NULL)
+          AND (:isArchived = w.isArchived)
     """
     )
     fun findAllByIsArchived(

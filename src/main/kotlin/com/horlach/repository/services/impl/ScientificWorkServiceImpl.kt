@@ -92,7 +92,7 @@ class ScientificWorkServiceImpl(
         val work = scientificWorkRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Work with id $id not found") }
 
-        if (user.id != work.supervisor.id) {
+        if (user.id != work.supervisor.id && user.role != UserRole.ROLE_ADMIN) {
             throw AccessDeniedException("Only the supervisor of the work can update it")
         }
 
