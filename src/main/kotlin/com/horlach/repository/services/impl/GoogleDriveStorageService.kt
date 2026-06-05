@@ -27,12 +27,15 @@ class GoogleDriveStorageService(
     var credentialsBase64: String,
 
     @Value($$"${google.drive.folder_id}")
-    var folderId: String
+    var folderId: String,
+
+    @Value($$"${google.drive.impersonate_email}")
+    var impersonateEmail: String
 ): StorageService {
 
     var credentialsJson = String(Base64.getDecoder().decode(credentialsBase64))
     var credentials = ServiceAccountCredentials.fromStream(credentialsJson.byteInputStream())
-        .createDelegated("repozitariy@spfc.kr.ua")
+        .createDelegated(impersonateEmail)
         .createScoped(listOf(DriveScopes.DRIVE_FILE))
 
 
