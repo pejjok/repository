@@ -8,6 +8,9 @@ COPY gradle ./gradle
 COPY build.gradle.kts .
 COPY settings.gradle.kts .
 
+# Make gradlew executable
+RUN chmod +x ./gradlew
+
 # Download dependencies to a separate layer to improve caching
 RUN ./gradlew dependencies --no-daemon
 
