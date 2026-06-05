@@ -18,7 +18,7 @@ COPY src ./src
 RUN ./gradlew build --no-daemon -x test
 
 # Stage 2: Create the final, smaller image
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR from the build stage
