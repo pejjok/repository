@@ -24,6 +24,8 @@ class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder
 ): UserService {
     override fun createUser(request: RegisterRequest): UserResponse {
+        require(!userRepository.existsByEmail(request.email)) { "User already exist with email " + request.email }
+
         val userEntity: User = request.toEntity(passwordEncoder)
 
         val savedUser = userRepository.save(userEntity)

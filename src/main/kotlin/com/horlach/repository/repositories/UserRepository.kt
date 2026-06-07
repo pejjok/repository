@@ -22,4 +22,5 @@ interface UserRepository: JpaRepository<User, UUID> {
 where assignedWorks.supervisor.id = ?1"""
     )
     fun existsByAssignedWorks_Supervisor_Id(id: UUID): Boolean
+    fun existsByEmail(email: Any): Boolean
 }
