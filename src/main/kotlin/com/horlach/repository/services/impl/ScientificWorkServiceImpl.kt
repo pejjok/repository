@@ -22,6 +22,9 @@ import com.horlach.repository.services.ScientificWorkService
 import com.horlach.repository.services.WorkFileService
 import org.springframework.security.access.AccessDeniedException
 import jakarta.transaction.Transactional
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.CachePut
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
@@ -35,6 +38,7 @@ class ScientificWorkServiceImpl(
     private val workFileService: WorkFileService
 ) : ScientificWorkService {
     @Transactional
+    @CachePut(value = ["work"], key = "#result.id")
     override fun createWork(
         request: ScientificWorkCreateRequest,
         supervisor: User
@@ -59,6 +63,7 @@ class ScientificWorkServiceImpl(
     }
 
     @Transactional
+    @CachePut(value = ["work"], key = "#result.id")
     override fun updateWork(
         id: UUID,
         request: ScientificWorkUpdateRequest,
@@ -84,6 +89,7 @@ class ScientificWorkServiceImpl(
         return savedWork.toResponse()
     }
 
+    @CachePut(value = ["work"], key = "#result.id")
     override fun archiveWork(
         id: UUID,
         request: ScientificWorkIsArchivedRequest,
@@ -101,6 +107,7 @@ class ScientificWorkServiceImpl(
         return savedWork.toResponse()
     }
 
+    @Cacheable(value = ["work"], key = "#id")
     override fun getWorkById(
         id: UUID,
         user: User
@@ -139,6 +146,7 @@ class ScientificWorkServiceImpl(
     }
 
     @Transactional
+    @CacheEvict(value = ["work"], key = "#id")
     override fun deleteWork(id: UUID) {
         val work = scientificWorkRepository.findById(id).orElse(null) ?: return
         workFileService.deleteWorkFile(work.file.id!!)
